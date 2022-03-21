@@ -15,7 +15,7 @@ pygame.init()
 screen = pygame.display.set_mode((W, H))
 all_objs = pygame.sprite.Group()
 bombs = pygame.sprite.Group()
-player = Cannon(cannon_count, (W/2, H-50), all_objs)
+cannon = Cannon(cannon_count, (W/2, H), all_objs)
 
 run = True
 clock = pygame.time.Clock()
@@ -26,7 +26,7 @@ while run:
         Bomb(bombs)
 
     screen.fill((255, 255, 255))
-    hp_blit(screen)
+    cannon.hp_blit(screen)
 
     events = [event for event in pygame.event.get()]
     all_objs.draw(screen)
@@ -44,5 +44,3 @@ while run:
     pygame.display.flip()
     clock.tick(60)
 
-
-##screen.blit(bg_surf, (0, 0))

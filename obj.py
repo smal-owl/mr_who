@@ -11,28 +11,20 @@ hp = settings.hp
 hp_0 = settings.hp
 
 
-def hp_blit(screen):
-    step = 20
-    pygame.draw.rect(screen, (64, 128, 200),
-                     (W - 2 * step, step, step, step * 5), 2)
-    pygame.draw.rect(screen, (64, 128, 255),
-                     (W - 2 * step, step + hp_0 - hp, step, hp))
-
-
 class Cannon(pygame.sprite.Sprite):
     def __init__(self, can_count, coords, *group):
         """Аргументы: coords - коордiнаты на поле"""
         super().__init__(*group)
         self.image = pygame.image.load("textures/cannon.png").convert_alpha()
-        self.image = pygame.transform.scale(self.image, (150, 150))
+        self.image = pygame.transform.scale(self.image, (100, 100))
         self.rect = self.image.get_rect()
         self.x = self.rect.x
         self.y = self.rect.y
         self.coords = coords
-        self.rect.x, self.rect.y = coords
-        self.rect.y = self.rect.y - 100
-        self.speed = 50
+        self.speed = 3.
         self.hp = settings.hp
+        self.rect.x, self.rect.y = coords
+
 
     def damag(self, b=100):
         self.hp = self.hp - int(b / 10)
@@ -42,32 +34,36 @@ class Cannon(pygame.sprite.Sprite):
     def death(self):
         pass
 
+    def hp_blit(self, screen):
+        step = 20
+        pygame.draw.rect(screen, (64, 128, 200),
+                         (W - 2 * step, step, step, step * 5), 2)
+        pygame.draw.rect(screen, (64, 128, 255),
+                         (W - 2 * step, step + hp_0 - hp, step, hp))
 
-
-
-    def update(self, m_pos, keys,objs,
-           *args):
+    def update(self, m_pos, keys, objs,
+               *args):
         """задел на будущее"""
         if keys[pygame.K_LEFT]:
             self.rect = self.rect.move(-self.speed, 0)
-
         if keys[pygame.K_RIGHT]:
             self.rect = self.rect.move(self.speed, 0)
         if keys[pygame.K_UP]:
             self.rect = self.rect.move(0, -self.speed)
         if keys[pygame.K_DOWN]:
             self.rect = self.rect.move(0, self.speed)
-
         if keys[pygame.K_LEFT]:
-            x -= 3
+            self.x -= self.speed
         if keys[pygame.K_RIGHT]:
-            x += 3
-
-        if 0 <= self.rect.x <= W:
-            print('ff')
-        if 0 <= self.rect.y <= H:
-            print('gg')
-
+            self.x += self.speed
+        if self.rect.x < 0:
+            self.x = W
+        if self.rect.x > W:
+            self.x = 0
+        if self.rect.y < 0:
+            self.y = H
+        if self.rect.y > H:
+            self.y = 0
 
 
 class Bomb(pygame.sprite.Sprite):
@@ -78,7 +74,7 @@ class Bomb(pygame.sprite.Sprite):
         self.hp = random.randint(0, 100)
         self.image = Bomb.image
         self.rect = self.image.get_rect()
-        self.rect.x = random.randrange(W-200)
+        self.rect.x = random.randrange(W - 200)
         self.rect.y = random.randrange(40)
 
     def update(self, *args):
