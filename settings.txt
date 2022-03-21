@@ -1,0 +1,5 @@
+size:600 600
+FPS:60
+hp:100
+step:20
+cannon_count:0
